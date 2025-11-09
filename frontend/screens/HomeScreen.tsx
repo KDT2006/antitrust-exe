@@ -6,7 +6,7 @@ import { BlurView } from 'expo-blur';
 
 import Button from '../components/Button';
 
-const videoSource = require('../assets/video/final_looped.mp4');
+const videoSource = require('../assets/video/backgroundImage.mp4');
 
 const { width, height } = Dimensions.get('window');
 
