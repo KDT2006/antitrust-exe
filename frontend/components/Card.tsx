@@ -80,7 +80,7 @@ const Card = ({
           {/* Content */}
           <View style={styles.contentContainer}>
             <Animated.View style={[styles.textContainer]}>
-              <Text numberOfLines={1} style={styles.title}>{item.Regular.Location ?? ""}</Text>
+              <Text style={styles.title}>{item.Regular.Location ?? ""}</Text>
               {item.Regular.Price > 0 ? (
                 <View style={styles.priceContainer}>
                   <Text style={styles.currency}>EXP</Text>
