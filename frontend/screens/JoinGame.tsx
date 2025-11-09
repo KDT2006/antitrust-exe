@@ -35,9 +35,11 @@ const JoinGame = ({
 
   // Listen to connection state changes
   useEffect(() => {
-    const removeListener = websocketManager.addConnectionStateListener((connected) => {
-      setIsConnected(connected);
-    });
+    const removeListener = websocketManager.addConnectionStateListener(
+      (connected) => {
+        setIsConnected(connected);
+      }
+    );
 
     return removeListener;
   }, []);
@@ -60,7 +62,7 @@ const JoinGame = ({
   return (
     <SafeAreaView style={styles.container}>
       <VideoBackground />
-      <Text style={styles.title}>JoinGame</Text>
+      <Text style={styles.title}>join_game</Text>
 
       <TextInput
         placeholderTextColor="#fff"
@@ -80,12 +82,15 @@ const JoinGame = ({
       />
 
       <Pressable
-        style={[styles.button, (isConnected && hasAttemptedJoin) && styles.buttonDisabled]}
+        style={[
+          styles.button,
+          isConnected && hasAttemptedJoin && styles.buttonDisabled,
+        ]}
         onPress={handleJoinGame}
         disabled={isConnected && hasAttemptedJoin}
       >
         <Text style={styles.buttonText}>
-          {(isConnected && hasAttemptedJoin) ? "Joining..." : "Join Game"}
+          {isConnected && hasAttemptedJoin ? "Joining..." : "Join Game"}
         </Text>
       </Pressable>
     </SafeAreaView>
@@ -99,19 +104,22 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     alignItems: "center",
+    justifyContent: "center",
+    paddingBottom: "200%",
   },
   title: {
     fontSize: 25,
     fontWeight: "bold",
     color: "#eee",
-    marginVertical: "5%",
+    // marginVertical: "5%",
     fontFamily: "PressStart2P_400Regular",
+    marginBottom: "30%",
   },
   input: {
     fontSize: 16,
     fontWeight: "bold",
+    backgroundColor: "#121224",
     color: "#fff",
-    backgroundColor: "#182159",
     padding: 20,
     borderRadius: 10,
     borderColor: "#ccc",
@@ -122,19 +130,18 @@ const styles = StyleSheet.create({
   button: {
     padding: 15,
     borderRadius: 15,
-    borderColor: "white",
-    borderWidth: 5,
+    borderColor: "#B2E4F9",
+    borderWidth: 2,
     margin: 10,
-    backgroundColor: "rgba(255, 255, 255, 0.1)",
-    minWidth: 200,
-  },
-  buttonDisabled: {
-    opacity: 0.5,
+    backgroundColor: "#121224",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "500",
     textAlign: "center",
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
 });

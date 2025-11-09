@@ -5,6 +5,7 @@ import {
   FlatList,
   Modal,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
 import React, {
   useState,
@@ -22,6 +23,7 @@ import Carousel from "../components/Carousel";
 import Dice from "../components/Dice";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import Entypo from "@expo/vector-icons/Entypo";
 
 // Type definitions for game state
 export interface Player {
@@ -90,6 +92,13 @@ const GameScreen = ({
   const [showPurchaseModal, setShowPurchaseModal] = useState(false);
   const [purchasePrompt, setPurchasePrompt] =
     useState<PropertyPurchaseRequest | null>(null);
+
+  const [addServerPrompt, setAddServerPrompt] =
+    useState<AddServerPrompt | null>(null);
+  type AddServerPrompt = {
+    placeName: string;
+    playerUsername: string;
+  };
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -139,6 +148,13 @@ const GameScreen = ({
             console.log("Winner:", message.data.winner);
             break;
 
+          case "addServer":
+            // Handle add server
+            const addServerData = message.data as AddServerPrompt;
+            console.log("Add server:", addServerData);
+            setAddServerPrompt(addServerData);
+            break;
+
           default:
             console.log("Unknown message type:", message.type);
         }
@@ -183,6 +199,20 @@ const GameScreen = ({
     setShowPurchaseModal(false);
   };
 
+  // Helper function to send a add server response
+  const sendAddServerResponse = (accepted: boolean) => {
+    if (accepted) {
+      websocketManager.sendMessage({
+        type: "addServer",
+        data: {
+          placeName: addServerPrompt?.placeName,
+          playerUsername: username,
+        },
+      });
+    }
+    setAddServerPrompt(null);
+  };
+
   // Helper function to check if it's the current player's turn
   const isMyTurn =
     currentPlayer.trim() === username.trim() && currentPlayer !== "";
@@ -218,27 +248,13 @@ const GameScreen = ({
     }
   };
 
-  // Color mapping for place colors
-  const colorMap: { [key: string]: string } = {
-    brown: "#8B4513",
-    lightBlue: "#87CEEB",
-    pink: "#FF69B4",
-    orange: "#FFA500",
-    red: "#FF6347",
-    yellow: "#FFD700",
-    green: "#32CD32",
-    darkBlue: "#00008B",
-  };
-
   // Render owned place item
   const renderOwnedPlace = ({
     item,
   }: {
     item: { place: any; serverCount: number };
   }) => {
-    const placeColor = item.place.color
-      ? colorMap[item.place.color] || "#2196f3"
-      : "#2196f3";
+    const placeColor = item.place.color;
     const currentRent = getCurrentRent(item.place, item.serverCount);
 
     return (
@@ -250,6 +266,16 @@ const GameScreen = ({
             Rent: {currentRent} • Servers: {item.serverCount}
           </Text>
         </View>
+        <Pressable
+          onPress={() =>
+            setAddServerPrompt({
+              placeName: item.place.name,
+              playerUsername: username,
+            })
+          }
+        >
+          <Entypo name="plus" size={24} color={placeColor} />
+        </Pressable>
       </View>
     );
   };
@@ -274,9 +300,7 @@ const GameScreen = ({
         }
       }
 
-      const placeColor = place.color
-        ? colorMap[place.color] || "#2196f3"
-        : "#2196f3";
+      const placeColor = place.color;
 
       return {
         Regular: {
@@ -303,43 +327,9 @@ const GameScreen = ({
     <GestureHandlerRootView>
       <SafeAreaView style={styles.container}>
         <VideoBackground />
-        <Text style={styles.title}>Game Screen</Text>
+        <Text style={styles.exp}>{myPlayerData?.exp} EXP</Text>
 
         <Text style={styles.playerText}>Current Player: {currentPlayer}</Text>
-
-        {/* Basic info display - replace this with your own components
-      {boardState && (
-        <View style={styles.gameInfo}>
-          <Text style={styles.infoText}>
-            Connected: {isConnected ? "Yes" : "No"}
-          </Text>
-          <Text style={styles.infoText}>
-            Current Player: {currentPlayer || "None"}
-          </Text>
-          <Text style={styles.infoText}>
-            Is My Turn: {isMyTurn ? "Yes" : "No"}
-          </Text>
-          {myPlayerData && (
-            <>
-              <Text style={styles.infoText}>
-                My Position: {myPlayerData.position}
-              </Text>
-              <Text style={styles.infoText}>
-                My EXP: {myPlayerData.exp}
-              </Text>
-              <Text style={styles.infoText}>
-                My Role: {myPlayerData.role}
-              </Text>
-            </>
-          )}
-          <Text style={styles.infoText}>
-            Places: {boardState.places?.length || 0}
-          </Text>
-          <Text style={styles.infoText}>
-            Players: {boardState.players?.length || 0}
-          </Text>
-        </View>
-      )} */}
 
         <Carousel
           cards={carouselCards}
@@ -350,26 +340,12 @@ const GameScreen = ({
           onRoll={(value1, value2) => sendMove(value1, value2)}
           isMyTurn={isMyTurn}
         />
-
-        {/* 
-        TODO: Build your own components here!
-        
-        Available state:
-        - boardState: BoardState | null - Full game state
-        - isConnected: boolean - WebSocket connection status
-        - currentPlayer: string - Username of current player
-        - isMyTurn: boolean - Whether it's the current user's turn
-        - myPlayerData: Player | undefined - Current user's player data
-        
-        Helper functions:
-        - sendMove(dice1: number, dice2: number) - Send a dice roll to the server
-      */}
       </SafeAreaView>
 
       <BottomSheet
         ref={bottomSheetRef}
         onChange={handleSheetChanges}
-        snapPoints={["50%", "75%"]}
+        snapPoints={["10%", "30%", "50%"]}
         backgroundStyle={styles.bottomSheetBackground}
         handleIndicatorStyle={styles.bottomSheetIndicator}
       >
@@ -429,7 +405,15 @@ const GameScreen = ({
             >
               Purchase Property
             </Text>
-            <Text style={{ color: "#fff", fontSize: 17, marginBottom: 8 }}>
+            <Text
+              style={{
+                color: "#fff",
+                fontSize: 17,
+                fontFamily: "PressStart2P_400Regular",
+                marginVertical: 20,
+                marginBottom: 40
+              }}
+            >
               {purchasePrompt?.propertyName}
             </Text>
             <View style={{ flexDirection: "row" }}>
@@ -463,6 +447,80 @@ const GameScreen = ({
           </View>
         </View>
       </Modal>
+
+      {/* Add Server Modal */}
+      <Modal
+        visible={addServerPrompt !== null}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setAddServerPrompt(null)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.7)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              width: "80%",
+              backgroundColor: "#232233",
+              borderRadius: 16,
+              padding: 30,
+              alignItems: "center",
+              shadowColor: "#000",
+              shadowOpacity: 0.25,
+              shadowOffset: { width: 0, height: 4 },
+              shadowRadius: 10,
+              elevation: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                color: "#fff",
+                fontWeight: "bold",
+                marginBottom: 15,
+              }}
+            >
+              Add Server
+            </Text>
+            <Text style={{ color: "#fff", fontSize: 17, marginBottom: 8 }}>
+              {addServerPrompt?.placeName}
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  marginRight: 10,
+                  paddingVertical: 10,
+                  backgroundColor: "#42fb82",
+                  alignItems: "center",
+                  borderRadius: 7,
+                }}
+                onPress={() => sendAddServerResponse(true)}
+              >
+                <Text style={{ fontWeight: "bold" }}>Add</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  marginLeft: 10,
+                  paddingVertical: 10,
+                  backgroundColor: "#f76060",
+                  alignItems: "center",
+                  borderRadius: 7,
+                }}
+                onPress={() => sendAddServerResponse(false)}
+              >
+                <Text style={{ fontWeight: "bold" }}>Decline</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </GestureHandlerRootView>
   );
 };
@@ -474,6 +532,14 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "black",
     alignItems: "center",
+  },
+  exp: {
+    fontSize: 30,
+    fontWeight: "bold",
+    color: "#eee",
+    marginVertical: "5%",
+    fontFamily: "PressStart2P_400Regular",
+    textAlign: "center",
   },
   title: {
     fontSize: 25,
@@ -503,7 +569,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#1a1a1a",
   },
   bottomSheetIndicator: {
-    backgroundColor: "#444",
+    backgroundColor: "#B2E4F9",
   },
   bottomSheetContent: {
     flex: 1,
