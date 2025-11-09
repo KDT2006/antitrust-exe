@@ -13,9 +13,9 @@ export interface ButtonProps {
 export const buttonTheme = {
   primary: {
     backgroundColor: 'rgba(10, 14, 39, 1)', // Dark navy/black background
-    borderColor: 'rgb(255, 255, 255)', // Neon cyan/blue
+    borderColor: 'rgba(255, 255, 255, 1)', // White border
     borderWidth: 2,
-    textColor: 'rgb(255, 255, 255)', // Neon cyan/blue text
+    textColor: 'rgba(255, 255, 255, 1)', // White text
     shadowColor: 'rgba(0, 217, 255, 1)', // Neon glow
   },
 };
@@ -51,9 +51,9 @@ export const buttonStyles = StyleSheet.create({
     textShadowRadius: 4,
   },
   disabled: {
-    backgroundColor: '#1A1A1A',
-    borderColor: '#333333',
-    opacity: 0.5,
+    backgroundColor: 'rgba(26, 26, 26, 1)',
+    borderColor: 'rgba(102, 102, 102, 1)',
+    opacity: 0.7,
   },
 });
 
