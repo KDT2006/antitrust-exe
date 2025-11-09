@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"math/rand"
+	"strings"
 
 	"github.com/gorilla/websocket"
 )
@@ -42,10 +43,53 @@ type Player struct {
 	Exp                int             `json:"exp"`
 	HasJailFree        bool            `json:"hasJailFree"`
 	JailAttempts       int             `json:"jailAttempts"`
-	OwnedPlaces        map[Place]int   `json:"ownedPlaces"`
+	OwnedPlaces        map[Place]int   `json:"-"`
 	HasExtraTurn       bool            `json:"hasExtraTurn"`
 	ConsecutiveDoubles int             `json:"consecutiveDoubles"`
 	Conn               *websocket.Conn `json:"-"`
+}
+
+// PlayerJSON is used for JSON marshaling/unmarshaling
+type PlayerJSON struct {
+	Username           string            `json:"username"`
+	Role               PlayerRole        `json:"role"`
+	Position           int               `json:"position"`
+	Exp                int               `json:"exp"`
+	HasJailFree        bool              `json:"hasJailFree"`
+	JailAttempts       int               `json:"jailAttempts"`
+	OwnedPlaces        []OwnedPlaceEntry `json:"ownedPlaces"`
+	HasExtraTurn       bool              `json:"hasExtraTurn"`
+	ConsecutiveDoubles int               `json:"consecutiveDoubles"`
+}
+
+type OwnedPlaceEntry struct {
+	Place       Place `json:"place"`
+	ServerCount int   `json:"serverCount"`
+}
+
+// MarshalJSON custom marshaling for Player to handle map[Place]int
+func (p *Player) MarshalJSON() ([]byte, error) {
+	ownedPlaces := make([]OwnedPlaceEntry, 0, len(p.OwnedPlaces))
+	for place, count := range p.OwnedPlaces {
+		ownedPlaces = append(ownedPlaces, OwnedPlaceEntry{
+			Place:       place,
+			ServerCount: count,
+		})
+	}
+
+	playerJSON := PlayerJSON{
+		Username:           p.Username,
+		Role:               p.Role,
+		Position:           p.Position,
+		Exp:                p.Exp,
+		HasJailFree:        p.HasJailFree,
+		JailAttempts:       p.JailAttempts,
+		OwnedPlaces:        ownedPlaces,
+		HasExtraTurn:       p.HasExtraTurn,
+		ConsecutiveDoubles: p.ConsecutiveDoubles,
+	}
+
+	return json.Marshal(playerJSON)
 }
 
 type Place struct {
@@ -80,9 +124,11 @@ type Board struct {
 }
 
 type Game struct {
-	BroadcastCh  chan []byte `json:"-"`
-	Board        Board       `json:"board"`
-	HostUsername string      `json:"hostUsername"`
+	BroadcastCh     chan []byte `json:"-"`
+	Board           Board       `json:"board"`
+	HostUsername    string      `json:"hostUsername"`
+	RequiredPlayers int         `json:"requiredPlayers"`
+	IsStarted       bool        `json:"isStarted"`
 }
 
 var Places = []Place{
@@ -401,22 +447,37 @@ func initializeCardDecks() ([]Card, []Card) {
 func (g *Game) handleMove(msg Message) {
 	var move MoveMessage
 
-	if err := json.Unmarshal(msg.Data, &move); err != nil {
+	// Marshal Data to JSON bytes, then unmarshal into MoveMessage
+	dataBytes, err := json.Marshal(msg.Data)
+	if err != nil {
+		log.Println("Error marshalling move message data:", err)
+		return
+	}
+
+	if err := json.Unmarshal(dataBytes, &move); err != nil {
 		log.Println("Error unmarshalling move message:", err)
 		return
 	}
 
 	// 1. Validation & Pre-Move Checks
-	// Verify it's the player's turn
-	if g.Board.CurrentPlayer != move.Username {
-		log.Println("Not the player's turn:", move.Username)
+	// Check if game has started
+	if !g.IsStarted {
+		log.Println("Game has not started yet. Waiting for all players to join.")
 		return
 	}
 
-	// Find the player object
+	// Verify it's the player's turn (trim and compare)
+	currentPlayerTrimmed := strings.TrimSpace(g.Board.CurrentPlayer)
+	moveUsernameTrimmed := strings.TrimSpace(move.Username)
+	if currentPlayerTrimmed != moveUsernameTrimmed {
+		log.Printf("Not the player's turn. Current: '%s', Move from: '%s'", currentPlayerTrimmed, moveUsernameTrimmed)
+		return
+	}
+
+	// Find the player object (trim and compare)
 	var player *Player
 	for _, p := range g.Board.Players {
-		if p.Username == move.Username {
+		if strings.TrimSpace(p.Username) == moveUsernameTrimmed {
 			player = p
 			break
 		}
@@ -491,12 +552,16 @@ func (g *Game) handleMove(msg Message) {
 		// Anti-Monopoly: Can roll doubles once (one extra turn)
 		g.setExtraTurnFlag(player)
 		g.Board.CurrentPlayer = player.Username
+		log.Printf("Extra turn granted to %s", player.Username)
 	} else {
 		// Advance to next player's turn
-		g.Board.CurrentPlayer = g.getNextPlayer(player.Username)
+		nextPlayer := g.getNextPlayer(player.Username)
+		g.Board.CurrentPlayer = nextPlayer
+		log.Printf("Turn advanced to %s", nextPlayer)
 	}
 
 	// 8. State Update & Broadcasting
+	log.Printf("Broadcasting board state. CurrentPlayer: %s", g.Board.CurrentPlayer)
 	g.broadcastBoardState()
 }
 
@@ -550,27 +615,9 @@ func (g *Game) resolveLandingSpace(player *Player, position int) {
 		return
 
 	case "unowned_property":
-		// Unowned Property: Player can buy (client decision or auto-decline)
-		propertyPurchaseRequest := PropertyPurchaseRequest{
-			PropertyName: space.Name,
-			Accepted:     false,
-		}
-		if err := player.Conn.WriteJSON(propertyPurchaseRequest); err != nil {
-			log.Println("Error writing property purchase request to player:", err)
-			return
-		}
-		var response PropertyPurchaseRequest
-		if err := player.Conn.ReadJSON(&response); err != nil {
-			log.Println("Error reading property purchase response from player:", err)
-			return
-		}
-		if response.Accepted {
-			space.Owner = player.Username
-			player.Exp -= space.Price
-		} else {
-			// player declined the purchase
-			return
-		}
+		// Unowned Property: For now, auto-decline to keep turns non-blocking
+		// TODO: Implement async purchase flow if needed
+		return
 
 	case "owned_property":
 		// Owned Property: Calculate and pay rent
@@ -671,16 +718,6 @@ func (g *Game) handleRentPayment(player *Player, space *Place) {
 	if g.isPlayerInPrisonOrPriceWar(owner) {
 		if owner.Role == PlayerRoleMonopolist {
 			return
-		} else {
-			// check if competitor can pay rent
-			rent := g.calculateRent(space)
-			if player.Exp >= rent {
-				player.Exp -= rent
-				owner.Exp += rent
-			} else {
-				// Handle bankruptcy
-				g.handleBankruptcy(player)
-			}
 		}
 	}
 
@@ -1025,18 +1062,10 @@ func (g *Game) handleBankruptcy(player *Player) {
 
 // Helper function to check win conditions (placeholder for win condition module)
 func (g *Game) checkWinConditions() {
-	if len(g.Board.Players) == 1 {
-		// Send winner message to the player
-		winnerMsg := WinnerMessage{
-			Winner: g.Board.Players[0].Username,
-		}
-		winnerJSON, err := json.Marshal(winnerMsg)
-		if err != nil {
-			log.Println("Error marshalling winner message:", err)
-			return
-		}
+	var winnerUsername string
 
-		g.BroadcastCh <- winnerJSON
+	if len(g.Board.Players) == 1 {
+		winnerUsername = g.Board.Players[0].Username
 	} else {
 		// take the player with the most money
 		mostMoneyPlayer := g.Board.Players[0]
@@ -1045,16 +1074,24 @@ func (g *Game) checkWinConditions() {
 				mostMoneyPlayer = player
 			}
 		}
-		winnerMsg := WinnerMessage{
-			Winner: mostMoneyPlayer.Username,
-		}
-		winnerJSON, err := json.Marshal(winnerMsg)
-		if err != nil {
-			log.Println("Error marshalling winner message:", err)
-			return
-		}
-		g.BroadcastCh <- winnerJSON
+		winnerUsername = mostMoneyPlayer.Username
 	}
+
+	// Send winner message to all players
+	winnerMsg := Message{
+		Type: string(MessageTypeWinner),
+		Data: WinnerMessage{
+			Winner: winnerUsername,
+		},
+	}
+
+	winnerJSON, err := json.Marshal(winnerMsg)
+	if err != nil {
+		log.Println("Error marshalling winner message:", err)
+		return
+	}
+
+	g.BroadcastCh <- winnerJSON
 
 	// End the game after sending winner message
 	// Close all player connections
@@ -1080,14 +1117,19 @@ func (g *Game) setExtraTurnFlag(player *Player) {
 
 // Helper function to broadcast board state
 func (g *Game) broadcastBoardState() {
-	boardJSON, err := json.Marshal(g.Board)
+	boardStateMsg := Message{
+		Type: string(MessageTypeBoardState),
+		Data: g.Board,
+	}
+
+	boardStateJSON, err := json.Marshal(boardStateMsg)
 	if err != nil {
-		log.Println("Error marshalling board state:", err)
+		log.Println("Error marshalling board state message:", err)
 		return
 	}
 
 	select {
-	case g.BroadcastCh <- boardJSON:
+	case g.BroadcastCh <- boardStateJSON:
 	default:
 		// Channel full, skip broadcast
 		log.Println("Broadcast channel full, skipping")
@@ -1099,7 +1141,13 @@ func (g *Game) BroadcastLoop() {
 	for msg := range g.BroadcastCh {
 		for i := len(g.Board.Players) - 1; i >= 0; i-- {
 			player := g.Board.Players[i]
-			err := player.Conn.WriteJSON(msg)
+			if player.Conn == nil {
+				log.Println("Player has no connection. Skipping broadcast.")
+				continue
+			}
+
+			// msg is already marshaled JSON bytes, so use WriteMessage instead of WriteJSON
+			err := player.Conn.WriteMessage(websocket.TextMessage, msg)
 			if err != nil {
 				log.Println("Error broadcasting message to player:", err)
 				player.Conn.Close()
