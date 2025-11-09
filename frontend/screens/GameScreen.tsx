@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  FlatList,
+  Modal,
+  TouchableOpacity,
+} from "react-native";
 import React, {
   useState,
   useEffect,
@@ -59,6 +66,11 @@ export interface BoardState {
   jail: string[];
 }
 
+export interface PropertyPurchaseRequest {
+  propertyName: string;
+  accepted: boolean;
+}
+
 const GameScreen = ({
   route,
   navigation,
@@ -75,7 +87,9 @@ const GameScreen = ({
   const [boardState, setBoardState] = useState<BoardState | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [currentPlayer, setCurrentPlayer] = useState<string>("");
-
+  const [showPurchaseModal, setShowPurchaseModal] = useState(false);
+  const [purchasePrompt, setPurchasePrompt] =
+    useState<PropertyPurchaseRequest | null>(null);
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -95,13 +109,20 @@ const GameScreen = ({
           case "boardState":
             // Update board state when received
             const boardData = message.data as BoardState;
-            console.log("BoardState received, places:", boardData.places?.length || 0);
+            console.log(
+              "BoardState received, places:",
+              boardData.places?.length || 0
+            );
             setBoardState(boardData);
             setCurrentPlayer((boardData.currentPlayer || "").trim());
             break;
 
-          case "properties":
-            // Properties are handled via boardState
+          case "propertyPurchaseRequest":
+            // Show purchase modal when property purchase is offered
+            const purchaseData = message.data as PropertyPurchaseRequest;
+            console.log("Property purchase request:", purchaseData);
+            setPurchasePrompt(purchaseData);
+            setShowPurchaseModal(true);
             break;
 
           case "cards":
@@ -147,6 +168,19 @@ const GameScreen = ({
         diceAmount2: dice2,
       },
     });
+  };
+
+  // Helper function to send a purchase response
+  const sendPurchaseResponse = (accepted: boolean) => {
+    websocketManager.sendMessage({
+      type: "propertyPurchaseResponse",
+      data: {
+        propertyName: purchasePrompt?.propertyName,
+        accepted: accepted,
+        playerUsername: username,
+      },
+    });
+    setShowPurchaseModal(false);
   };
 
   // Helper function to check if it's the current player's turn
@@ -197,7 +231,11 @@ const GameScreen = ({
   };
 
   // Render owned place item
-  const renderOwnedPlace = ({ item }: { item: { place: any; serverCount: number } }) => {
+  const renderOwnedPlace = ({
+    item,
+  }: {
+    item: { place: any; serverCount: number };
+  }) => {
     const placeColor = item.place.color
       ? colorMap[item.place.color] || "#2196f3"
       : "#2196f3";
@@ -338,7 +376,9 @@ const GameScreen = ({
         <BottomSheetView style={styles.bottomSheetContent}>
           <Text style={styles.bottomSheetTitle}>My Properties</Text>
           {ownedPlaces.length === 0 ? (
-            <Text style={styles.emptyText}>You don't own any properties yet</Text>
+            <Text style={styles.emptyText}>
+              You don't own any properties yet
+            </Text>
           ) : (
             <FlatList
               data={ownedPlaces}
@@ -349,6 +389,80 @@ const GameScreen = ({
           )}
         </BottomSheetView>
       </BottomSheet>
+
+      {/* Property Purchase Modal */}
+      <Modal
+        visible={showPurchaseModal}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setShowPurchaseModal(false)}
+      >
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0,0,0,0.7)",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <View
+            style={{
+              width: "80%",
+              backgroundColor: "#232233",
+              borderRadius: 16,
+              padding: 30,
+              alignItems: "center",
+              shadowColor: "#000",
+              shadowOpacity: 0.25,
+              shadowOffset: { width: 0, height: 4 },
+              shadowRadius: 10,
+              elevation: 10,
+            }}
+          >
+            <Text
+              style={{
+                fontSize: 20,
+                color: "#fff",
+                fontWeight: "bold",
+                marginBottom: 15,
+              }}
+            >
+              Purchase Property
+            </Text>
+            <Text style={{ color: "#fff", fontSize: 17, marginBottom: 8 }}>
+              {purchasePrompt?.propertyName}
+            </Text>
+            <View style={{ flexDirection: "row" }}>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  marginRight: 10,
+                  paddingVertical: 10,
+                  backgroundColor: "#42fb82",
+                  alignItems: "center",
+                  borderRadius: 7,
+                }}
+                onPress={() => sendPurchaseResponse(true)}
+              >
+                <Text style={{ fontWeight: "bold" }}>Buy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  flex: 1,
+                  marginLeft: 10,
+                  paddingVertical: 10,
+                  backgroundColor: "#f76060",
+                  alignItems: "center",
+                  borderRadius: 7,
+                }}
+                onPress={() => sendPurchaseResponse(false)}
+              >
+                <Text style={{ fontWeight: "bold" }}>Decline</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </GestureHandlerRootView>
   );
 };
