@@ -1,11 +1,9 @@
 import React from 'react';
-import { StyleSheet, View, Dimensions, Platform } from 'react-native';
+import { StyleSheet, View, Platform } from 'react-native';
 import { VideoView, useVideoPlayer } from 'expo-video';
 import { BlurView } from 'expo-blur';
 
 const videoSource = require('../assets/video/backgroundImage.mp4');
-
-const { width, height } = Dimensions.get('window');
 
 // Editable blur constants - Platform-specific because iOS and Android use different blur implementations
 // iOS uses native UIVisualEffectView (0-100), Android uses software blur (0-100 but different visual result)
@@ -50,31 +48,13 @@ const VideoBackground: React.FC = () => {
 
 const styles = StyleSheet.create({
   container: {
-    width: width,
-    height: height,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    ...StyleSheet.absoluteFillObject,
   },
   video: {
-    width: width,
-    height: height,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    ...StyleSheet.absoluteFillObject,
   },
   blurOverlay: {
-    width: width,
-    height: height,
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    bottom: 0,
-    right: 0,
+    ...StyleSheet.absoluteFillObject,
   },
 });
 
