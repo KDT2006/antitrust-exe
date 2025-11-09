@@ -1,63 +1,67 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, Alert } from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Pressable, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import VideoBackground from "../components/VideoBackground";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
-import VideoBackground from '../components/VideoBackground';
-import HomeContent from '../components/HomeContent';
-import UsernameModal from '../components/UsernameModal';
-
-const HomeScreen = () => {
-  const [isUsernameModalVisible, setIsUsernameModalVisible] = useState(false);
-
-  const handleJoinGame = () => {
-    setIsUsernameModalVisible(true);
-  };
-
-  const handleUsernameSubmit = (username: string) => {
-    // TODO: Send username to backend here
-    // You can call a function like: sendUsernameToBackend(username)
-    
-    setIsUsernameModalVisible(false);
-    // For now, just show an alert - replace this with your backend call
-    Alert.alert('Success', `Joining game as ${username}`);
-  };
-
-  const handleUsernameCancel = () => {
-    setIsUsernameModalVisible(false);
-  };
-
-  const handleCreateGame = () => {
-    Alert.alert('Create Game pressed');
-  };
-
-  const handleHowToPlay = () => {
-    Alert.alert('How to Play pressed');
-  };
-
+const HomeScreen = ({
+  navigation,
+}: {
+  navigation: NativeStackNavigationProp<any>;
+}) => {
   return (
-    <SafeAreaProvider>
-      <View style={styles.container}>
-        <VideoBackground />
-        <HomeContent
-          onJoinGame={handleJoinGame}
-          onCreateGame={handleCreateGame}
-          onHowToPlay={handleHowToPlay}
-        />
-      </View>
+    <SafeAreaView style={styles.safeArea}>
+      <VideoBackground />
 
-      <UsernameModal
-        visible={isUsernameModalVisible}
-        onClose={handleUsernameCancel}
-        onSubmit={handleUsernameSubmit}
-      />
-    </SafeAreaProvider>
+      <Text style={styles.title}>antitrust.exe</Text>
+      <View>
+        <Pressable
+          onPress={() => navigation.navigate("JoinGame")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Join Game</Text>
+        </Pressable>
+        <Pressable
+          onPress={() => navigation.navigate("CreateGame")}
+          style={styles.button}
+        >
+          <Text style={styles.buttonText}>Create Game</Text>
+        </Pressable>
+        <Pressable style={styles.button}>
+          <Text style={styles.buttonText}>Instructions</Text>
+        </Pressable>
+      </View>
+    </SafeAreaView>
   );
 };
 
+export default HomeScreen;
+
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  title: {
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#eee",
+    marginVertical: "5%",
+    fontFamily: "PressStart2P_400Regular",
+  },
+  button: {
+    padding: 15,
+    borderRadius: 15,
+    borderColor: "white",
+    borderWidth: 5,
+    margin: 10,
+    backgroundColor: "rgba(255, 255, )",
+  },
+  buttonText: {
+    fontSize: 18,
+    color: "#fff",
+    fontWeight: "bold",
+    textAlign: "center",
   },
 });
-
-export default HomeScreen;

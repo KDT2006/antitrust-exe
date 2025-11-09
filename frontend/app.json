@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Anti-Trust",
-    "slug": "Anti-Trust",
+    "name": "frontend",
+    "slug": "frontend",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -31,6 +31,12 @@
         "expo-video",
         {
           "supportsBackgroundPlayback": true
+        }
+      ],
+      [
+        "expo-font",
+        {
+          "fonts": ["./assets/fonts/PressStart2P_400Regular.ttf"]
         }
       ]
     ]

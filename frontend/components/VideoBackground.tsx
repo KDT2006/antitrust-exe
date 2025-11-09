@@ -1,20 +1,11 @@
-import React from 'react';
-import { StyleSheet, View, Platform } from 'react-native';
-import { VideoView, useVideoPlayer } from 'expo-video';
-import { BlurView } from 'expo-blur';
+import { Platform, StyleSheet, Text, View } from "react-native";
+import React from "react";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { BlurView } from "expo-blur";
+import { StatusBar } from "expo-status-bar";
 
-const videoSource = require('../assets/video/backgroundImage.mp4');
-
-// Editable blur constants - Platform-specific because iOS and Android use different blur implementations
-// iOS uses native UIVisualEffectView (0-100), Android uses software blur (0-100 but different visual result)
-const BACKGROUND_BLUR_INTENSITY_IOS = 20; // Adjust this value (0-100) for iOS blur intensity
-const BACKGROUND_BLUR_INTENSITY_ANDROID = 100; // Adjust this value (0-100) for Android blur intensity
-const BACKGROUND_BLUR_INTENSITY = Platform.OS === 'ios' ? BACKGROUND_BLUR_INTENSITY_IOS : BACKGROUND_BLUR_INTENSITY_ANDROID;
-const BLUR_TINT = 'dark'; // Options: 'light', 'dark', 'default' - or use 'blue' for dimmed blue view
-const USE_DIMMED_BLUE_VIEW = false; // Set to true for dimmed blue overlay, false for standard blur
-const BLUE_OVERLAY_OPACITY = 0.3; // Adjust opacity (0-1) of the blue overlay
-
-const VideoBackground: React.FC = () => {
+const VideoBackground = () => {
+  const videoSource = require("../assets/video/bg2.mp4");
   const player = useVideoPlayer(videoSource, (player) => {
     player.loop = true;
     player.muted = true;
@@ -23,28 +14,24 @@ const VideoBackground: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <StatusBar style="light" backgroundColor="transparent" />
       <VideoView
-        player={player}
         style={styles.video}
-        contentFit="cover"
+        player={player}
+        allowsPictureInPicture
         nativeControls={false}
-        fullscreenOptions={{
-          enable: false,
-        }}
+        contentFit="cover"
       />
-      {BACKGROUND_BLUR_INTENSITY > 0 && (
-        <BlurView
-          intensity={BACKGROUND_BLUR_INTENSITY}
-          style={styles.blurOverlay}
-          tint={USE_DIMMED_BLUE_VIEW ? 'dark' : BLUR_TINT}
-        />
-      )}
-      {USE_DIMMED_BLUE_VIEW && (
-        <View style={[styles.blurOverlay, { backgroundColor: `rgba(0, 13, 26, ${BLUE_OVERLAY_OPACITY})` }]} />
-      )}
+      <BlurView
+        intensity={Platform.OS === "ios" ? 30 : 50}
+        style={styles.blur}
+        tint="systemChromeMaterialDark"
+      />
     </View>
   );
 };
+
+export default VideoBackground;
 
 const styles = StyleSheet.create({
   container: {
@@ -53,10 +40,7 @@ const styles = StyleSheet.create({
   video: {
     ...StyleSheet.absoluteFillObject,
   },
-  blurOverlay: {
+  blur: {
     ...StyleSheet.absoluteFillObject,
   },
 });
-
-export default VideoBackground;
-
