@@ -551,6 +551,10 @@ func (g *Game) resolveLandingSpace(player *Player, position int) {
 
 	case "unowned_property":
 		// Unowned Property: Player can buy (client decision or auto-decline)
+		if player.Conn == nil {
+			// No connection (e.g., in tests), skip purchase
+			return
+		}
 		propertyPurchaseRequest := PropertyPurchaseRequest{
 			PropertyName: space.Name,
 			Accepted:     false,
@@ -671,17 +675,9 @@ func (g *Game) handleRentPayment(player *Player, space *Place) {
 	if g.isPlayerInPrisonOrPriceWar(owner) {
 		if owner.Role == PlayerRoleMonopolist {
 			return
-		} else {
-			// check if competitor can pay rent
-			rent := g.calculateRent(space)
-			if player.Exp >= rent {
-				player.Exp -= rent
-				owner.Exp += rent
-			} else {
-				// Handle bankruptcy
-				g.handleBankruptcy(player)
-			}
 		}
+		// Competitor in jail can still collect rent
+		// Fall through to calculate and pay rent
 	}
 
 	// Calculate rent based on owner's role and buildings
@@ -735,11 +731,19 @@ func (g *Game) handleCardSpace(player *Player, cardType string) {
 func (g *Game) drawCard(cardType CardType) *Card {
 	switch cardType {
 	case CardTypeCompetitor:
+		if len(g.Board.CompetitorCards) == 0 {
+			return nil
+		}
 		card := &g.Board.CompetitorCards[0]
+		// Rotate card to bottom of deck
 		g.Board.CompetitorCards = append(g.Board.CompetitorCards[1:], g.Board.CompetitorCards[0])
 		return card
 	case CardTypeMonopolist:
+		if len(g.Board.MonopolistCards) == 0 {
+			return nil
+		}
 		card := &g.Board.MonopolistCards[0]
+		// Rotate card to bottom of deck
 		g.Board.MonopolistCards = append(g.Board.MonopolistCards[1:], g.Board.MonopolistCards[0])
 		return card
 	default:
@@ -759,7 +763,8 @@ func (g *Game) resolveCardEffect(player *Player, card *Card) {
 		g.moveToPlace(player, "Emacs")
 
 	case "move_to_start":
-		g.moveToPlace(player, "Start")
+		// Move to position 0 (start/go)
+		player.Position = 0
 		// Collect from Start (100 EXP for passing Go)
 		player.Exp += 100
 
@@ -1099,6 +1104,10 @@ func (g *Game) BroadcastLoop() {
 	for msg := range g.BroadcastCh {
 		for i := len(g.Board.Players) - 1; i >= 0; i-- {
 			player := g.Board.Players[i]
+			if player.Conn == nil {
+				// Skip players without connections (e.g., in tests)
+				continue
+			}
 			err := player.Conn.WriteJSON(msg)
 			if err != nil {
 				log.Println("Error broadcasting message to player:", err)
