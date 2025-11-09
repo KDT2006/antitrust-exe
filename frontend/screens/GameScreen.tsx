@@ -95,6 +95,7 @@ const GameScreen = ({
           case "boardState":
             // Update board state when received
             const boardData = message.data as BoardState;
+            console.log("BoardState received, places:", boardData.places?.length || 0);
             setBoardState(boardData);
             setCurrentPlayer((boardData.currentPlayer || "").trim());
             break;
@@ -217,8 +218,12 @@ const GameScreen = ({
 
   // Transform places to CarouselCard format
   const carouselCards = useMemo(() => {
-    if (!boardState?.places) return [];
+    if (!boardState?.places) {
+      console.log("No boardState or places");
+      return [];
+    }
 
+    console.log("Board places count:", boardState.places.length);
     return boardState.places.map((place) => {
       // Find owner's role if place is owned
       let ownerRole: string | undefined = undefined;
@@ -300,7 +305,7 @@ const GameScreen = ({
 
         <Carousel
           cards={carouselCards}
-          currentIndex={myPlayerData?.position || 0}
+          currentIndex={myPlayerData?.position ?? 0}
         />
 
         <Dice

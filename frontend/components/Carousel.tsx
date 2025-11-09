@@ -33,9 +33,11 @@ const Carousel = ({ currentIndex, cards }: { currentIndex: number; cards: Carous
   const flatListRef = React.useRef<Animated.FlatList>(null);
 
   useEffect(() => {
-    if (cards.length > 0 && currentIndex >= 0 && currentIndex < cards.length) {
+    if (cards.length > 0 && currentIndex >= 0) {
+      // Wrap the index if it exceeds the cards length
+      const wrappedIndex = currentIndex % cards.length;
       flatListRef.current?.scrollToIndex({
-        index: currentIndex % cards.length,
+        index: wrappedIndex,
         animated: true,
       });
     }
