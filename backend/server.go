@@ -32,13 +32,16 @@ type Server struct {
 type MessageType string
 
 const (
-	MessageTypeMove       MessageType = "move"
-	MessageTypeGameStart  MessageType = "gameStart"
-	MessageTypePlayerJoin MessageType = "playerJoin"
-	MessageTypeBoardState MessageType = "boardState"
-	MessageTypeWinner     MessageType = "winner"
-	MessageTypeProperties MessageType = "properties"
-	MessageTypeCards      MessageType = "cards"
+	MessageTypeMove                 MessageType = "move"
+	MessageTypeGameStart            MessageType = "gameStart"
+	MessageTypePlayerJoin           MessageType = "playerJoin"
+	MessageTypeBoardState           MessageType = "boardState"
+	MessageTypeWinner               MessageType = "winner"
+	MessageTypeProperties           MessageType = "properties"
+	MessageTypeCards                MessageType = "cards"
+	MessagePropertyPurchaseRequest  MessageType = "propertyPurchaseRequest"
+	MessagePropertyPurchaseResponse MessageType = "propertyPurchaseResponse"
+	MessageTypeAddServer            MessageType = "addServer"
 )
 
 // Message is the message sent from the client to the server and also server to client
@@ -63,6 +66,19 @@ type PropertiesMessage struct {
 type PropertyPurchaseRequest struct {
 	PropertyName string `json:"propertyName"`
 	Accepted     bool   `json:"accepted"`
+}
+
+// PropertyPurchaseResponse is the message sent from the client to the server in response to a property purchase request
+type PropertyPurchaseResponse struct {
+	PropertyName   string `json:"propertyName"`
+	Accepted       bool   `json:"accepted"`
+	PlayerUsername string `json:"playerUsername"`
+}
+
+// AddServerMessage is the message sent from the client to the server to add a server to a place
+type AddServerMessage struct {
+	PlaceName      string `json:"placeName"`
+	PlayerUsername string `json:"playerUsername"`
 }
 
 // WinnerMessage is the message sent from the server to the client to send the winner
@@ -303,6 +319,102 @@ func (s *Server) handleJoinGame(w http.ResponseWriter, r *http.Request) {
 		switch msg.Type {
 		case string(MessageTypeMove):
 			game.handleMove(msg)
+		case string(MessagePropertyPurchaseResponse):
+			game.handlePropertyPurchaseResponse(msg)
+		case string(MessageTypeAddServer):
+			dataBytes, err := json.Marshal(msg.Data)
+			if err != nil {
+				log.Println("Error marshalling add server message data:", err)
+				return
+			}
+
+			var addServer AddServerMessage
+			if err := json.Unmarshal(dataBytes, &addServer); err != nil {
+				log.Println("Error unmarshalling add server message:", err)
+				return
+			}
+
+			log.Printf("Add server message: %+v", addServer)
+
+			// Players can add servers at any time, not just on their turn
+			// This allows property management between turns
+
+			// get the player by username
+			var player *Player
+			for _, p := range game.Board.Players {
+				if p.Username == addServer.PlayerUsername {
+					player = p
+					break
+				}
+			}
+
+			if player == nil {
+				log.Println("Player not found:", addServer.PlayerUsername)
+				return
+			}
+
+			// find the place by name (use index to modify the actual place in the slice)
+			var placeIndex int = -1
+			for i, p := range game.Board.Places {
+				if p.Name == addServer.PlaceName {
+					placeIndex = i
+					break
+				}
+			}
+
+			if placeIndex == -1 {
+				log.Println("Place not found:", addServer.PlaceName)
+				return
+			}
+
+			place := &game.Board.Places[placeIndex]
+
+			// check if the player owns the place
+			if place.Owner != player.Username {
+				log.Println("Player does not own the place:", player.Username, place.Name)
+				return
+			}
+
+			// check if the player can afford the server
+			if player.Exp < place.PriceOfServers {
+				log.Println("Player can't afford the server:", player.Username, "needs", place.PriceOfServers, "has", player.Exp)
+				return
+			}
+
+			// check if max servers reached (typically 5)
+			if place.NumServers >= 5 {
+				log.Println("Max servers reached for place:", place.Name)
+				return
+			}
+
+			// add the server to the place
+			game.Board.Places[placeIndex].NumServers++
+			player.Exp -= place.PriceOfServers
+
+			// Update the player's OwnedPlaces map - need to find the original key and update it
+			// Since Place is used as a map key and structs are compared by value,
+			// we need to remove the old entry and add the new one with updated NumServers
+			var oldPlaceKey Place
+			found := false
+			for placeKey := range player.OwnedPlaces {
+				if placeKey.Name == place.Name {
+					oldPlaceKey = placeKey
+					found = true
+					break
+				}
+			}
+			if found {
+				delete(player.OwnedPlaces, oldPlaceKey)
+				// Create a new key with the updated NumServers but keep other fields from original
+				updatedPlaceKey := oldPlaceKey
+				updatedPlaceKey.NumServers = game.Board.Places[placeIndex].NumServers
+				player.OwnedPlaces[updatedPlaceKey] = game.Board.Places[placeIndex].NumServers
+			}
+
+			log.Printf("Player %s added a server to %s for %d EXP (total servers: %d)", player.Username, place.Name, place.PriceOfServers, game.Board.Places[placeIndex].NumServers)
+
+			// broadcast updated board state
+			game.broadcastBoardState()
 		}
 	}
 }

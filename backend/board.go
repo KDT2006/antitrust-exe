@@ -12,14 +12,14 @@ import (
 type PlaceColor string
 
 const (
-	PlaceColorBrown     PlaceColor = "brown"
-	PlaceColorLightBlue PlaceColor = "lightBlue"
-	PlaceColorPink      PlaceColor = "pink"
-	PlaceColorOrange    PlaceColor = "orange"
-	PlaceColorRed       PlaceColor = "red"
-	PlaceColorYellow    PlaceColor = "yellow"
-	PlaceColorGreen     PlaceColor = "green"
-	PlaceColorDarkBlue  PlaceColor = "darkBlue"
+	PlaceColorBrown     PlaceColor = "#944E2D"
+	PlaceColorLightBlue PlaceColor = "#B2E4F9"
+	PlaceColorPink      PlaceColor = "#D5338A"
+	PlaceColorOrange    PlaceColor = "#F39202"
+	PlaceColorRed       PlaceColor = "#E40919"
+	PlaceColorYellow    PlaceColor = "#FEEB03"
+	PlaceColorGreen     PlaceColor = "#06A74E"
+	PlaceColorDarkBlue  PlaceColor = "#0167B2"
 )
 
 type PlayerRole string
@@ -133,283 +133,499 @@ type Game struct {
 
 var Places = []Place{
 	{
-		Name:        "VS Code",
-		Description: "The best Code Editor.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorBrown,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Start",
+		Description:    "Start Here!",
+		Price:          0,
+		Rent:           0,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 0,
+		Rent1Servers:   0,
+		Rent2Servers:   0,
+		Rent3Servers:   0,
+		Rent4Servers:   0,
+		Rent5Servers:   0,
 	},
 	{
-		Name:        "Emacs",
-		Description: "Neovim's older brother.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorLightBlue,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "HTML",
+		Description:    "The backbone of the web.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorBrown,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   20,
+		Rent2Servers:   40,
+		Rent3Servers:   60,
+		Rent4Servers:   80,
+		Rent5Servers:   100,
 	},
 	{
-		Name:        "Sockets",
-		Description: "Connect anything, anywhere.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorPink,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "CSS",
+		Description:    "Make it pretty.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorBrown,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   20,
+		Rent2Servers:   40,
+		Rent3Servers:   60,
+		Rent4Servers:   80,
+		Rent5Servers:   100,
 	},
 	{
-		Name:        "Pipes",
-		Description: "Pass it along!",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorOrange,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Data Corruption",
+		Description:    "Bits flipped, dreams crushed.",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   30,
+		Rent2Servers:   60,
+		Rent3Servers:   90,
+		Rent4Servers:   120,
+		Rent5Servers:   150,
 	},
 	{
-		Name:        "Message Queues",
-		Description: "Keep it moving!",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorRed,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Sockets",
+		Description:    "Connect anything, anywhere.",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "Shared Memory",
-		Description: "What's mine is yours.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorYellow,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Python",
+		Description:    "Simple yet powerful.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorLightBlue,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "Burnout",
-		Description: "panic(\"Ahhhhhhhh!\")",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "115",
+		Description:    "Hello, world!",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorLightBlue,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   15,
+		Rent2Servers:   30,
+		Rent3Servers:   45,
+		Rent4Servers:   60,
+		Rent5Servers:   75,
 	},
 	{
-		Name:        "Data Corruption",
-		Description: "Bits flipped, dreams crushed.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorDarkBlue,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "OCaml",
+		Description:    "Pattern matching",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorLightBlue,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "HTML",
-		Description: "The backbone of the web.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorBrown,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Jail",
+		Description:    "Jail - Players can get out by rolling doubles, paying 50 EXP, or after 2 turns",
+		Price:          0,
+		Rent:           0,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 0,
+		Rent1Servers:   0,
+		Rent2Servers:   0,
+		Rent3Servers:   0,
+		Rent4Servers:   0,
+		Rent5Servers:   0,
 	},
 	{
-		Name:        "CSS",
-		Description: "Make it pretty.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorLightBlue,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Java",
+		Description:    "Write once, run anywhere.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorPink,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "115",
-		Description: "Hello, world!",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "VS Code",
+		Description:    "The best Code Editor.",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   20,
+		Rent2Servers:   40,
+		Rent3Servers:   60,
+		Rent4Servers:   80,
+		Rent5Servers:   100,
 	},
 	{
-		Name:        "Python",
-		Description: "Simple yet powerful.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "OOP",
+		Description:    "Classy code.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorPink,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "Ocaml",
-		Description: "Pattern matching",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "116",
+		Description:    "Hello, world 2!",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorPink,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "Java",
-		Description: "Write once, run anywhere.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Pipes",
+		Description:    "Pass it along!",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   25,
+		Rent2Servers:   50,
+		Rent3Servers:   75,
+		Rent4Servers:   100,
+		Rent5Servers:   125,
 	},
 	{
-		Name:        "OOP",
-		Description: "Classy code.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "250",
+		Description:    "Trees Everywhere",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorOrange,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "116",
-		Description: "Hello, world 2!",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Hashmap",
+		Description:    "O(1) lookups",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorOrange,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "250",
-		Description: "Trees Everywhere",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Leetcode",
+		Description:    "Practice makes perfect.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorOrange,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   20,
+		Rent2Servers:   40,
+		Rent3Servers:   60,
+		Rent4Servers:   80,
+		Rent5Servers:   100,
 	},
 	{
-		Name:        "Hashmap",
-		Description: "O(1) lookups",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "C",
+		Description:    "The original.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorRed,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "Leetcode",
-		Description: "Practice makes perfect.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "220",
+		Description:    "Pointers are hard.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorRed,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "C",
-		Description: "The original.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Go",
+		Description:    "Go for glory!",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorRed,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "Go",
-		Description: "Go for glory!",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Message Queues",
+		Description:    "Keep it moving!",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   25,
+		Rent2Servers:   50,
+		Rent3Servers:   75,
+		Rent4Servers:   100,
+		Rent5Servers:   125,
 	},
 	{
-		Name:        "331",
-		Description: "You thought 250 was hard...",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "331",
+		Description:    "You thought 250 was hard...",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorYellow,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   25,
+		Rent2Servers:   50,
+		Rent3Servers:   75,
+		Rent4Servers:   100,
+		Rent5Servers:   125,
 	},
 	{
-		Name:        "Algorithms",
-		Description: "The art of the possible.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Algorithms",
+		Description:    "The art of the possible.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorYellow,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "474",
-		Description: "BackPropagation!",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Emacs",
+		Description:    "Neovim's older brother.",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   30,
+		Rent2Servers:   60,
+		Rent3Servers:   90,
+		Rent4Servers:   120,
+		Rent5Servers:   150,
 	},
 	{
-		Name:        "341",
-		Description: "Its All 1s And 0s",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "474",
+		Description:    "BackPropagation!",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorYellow,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "379",
-		Description: "Kris is the GOAT! ",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Code Errors",
+		Description:    "Go to Jail!",
+		Price:          0,
+		Rent:           0,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 0,
+		Rent1Servers:   0,
+		Rent2Servers:   0,
+		Rent3Servers:   0,
+		Rent4Servers:   0,
+		Rent5Servers:   0,
 	},
 	{
-		Name:        "Mips",
-		Description: "The old school.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "341",
+		Description:    "Its All 1s And 0s",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorGreen,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "439",
-		Description: "Unleash the Quantum Leap!",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "379",
+		Description:    "Kris is the GOAT! ",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorGreen,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "486",
-		Description: "Go Distributed. Go Far.",
-		Price:       100,
-		Rent:        10,
-		Color:       PlaceColorGreen,
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Mips",
+		Description:    "The old school.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorGreen,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 	{
-		Name:        "System crash",
-		Description: "System crash / Infinite Loop - Combined jail space (System crash for monopolists, Infinite Loop for competitors)",
-		Price:       0,
-		Rent:        0,
-		Color:       "",
-		Owner:       "",
-		NumServers:  0,
+		Name:           "Shared Memory",
+		Description:    "What's mine is yours.",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   30,
+		Rent2Servers:   60,
+		Rent3Servers:   90,
+		Rent4Servers:   120,
+		Rent5Servers:   150,
 	},
 	{
-		Name:        "Code Errors",
-		Description: "Just visiting - no action",
-		Price:       0,
-		Rent:        0,
-		Color:       "",
-		Owner:       "",
-		NumServers:  0,
+		Name:           "486",
+		Description:    "Go Distributed. Go Far.",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorDarkBlue,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
+	},
+	{
+		Name:           "Burnout",
+		Description:    "panic(\"Ahhhhhhhh!\")",
+		Price:          100,
+		Rent:           10,
+		Color:          "",
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   35,
+		Rent2Servers:   70,
+		Rent3Servers:   105,
+		Rent4Servers:   140,
+		Rent5Servers:   175,
+	},
+	{
+		Name:           "439",
+		Description:    "Unleash the Quantum Leap!",
+		Price:          100,
+		Rent:           10,
+		Color:          PlaceColorDarkBlue,
+		Owner:          "",
+		NumServers:     0,
+		PriceOfServers: 100,
+		Rent1Servers:   10,
+		Rent2Servers:   20,
+		Rent3Servers:   30,
+		Rent4Servers:   40,
+		Rent5Servers:   50,
 	},
 }
 
@@ -437,8 +653,8 @@ func initializeCardDecks() ([]Card, []Card) {
 		{Name: "pay_xp_card_3", Description: "Pay 25 EXP"},
 		{Name: "pay_xp_card_4", Description: "Pay 75 EXP"},
 		{Name: "pay_xp_card_5", Description: "Pay 25 EXP"},
-		{Name: "go_to_prison_card_1", Description: "Go to System crash"},
-		{Name: "go_to_prison_card_2", Description: "Go to System crash"},
+		{Name: "go_to_prison_card_1", Description: "Go to Jail"},
+		{Name: "go_to_prison_card_2", Description: "Go to Jail"},
 	}
 
 	return competitorCards, monopolistCards
@@ -458,6 +674,8 @@ func (g *Game) handleMove(msg Message) {
 		log.Println("Error unmarshalling move message:", err)
 		return
 	}
+
+	log.Printf("Move message: %+v", move)
 
 	// 1. Validation & Pre-Move Checks
 	// Check if game has started
@@ -488,15 +706,17 @@ func (g *Game) handleMove(msg Message) {
 		return
 	}
 
-	// Check if player is in System crash/Infinite Loop and handle getting out logic
-	if g.isPlayerInPrisonOrPriceWar(player) {
-		if !g.handlePrisonPriceWarExit(player, move) {
+	// Check if player is in jail (not just visiting) and handle getting out logic
+	if g.isPlayerInJail(player) {
+		log.Printf("Player %s is in jail, attempting to get out", player.Username)
+		if !g.handleJailExit(player, move) {
 			// Player couldn't get out, turn ends - advance to next player
 			g.Board.CurrentPlayer = g.getNextPlayer(player.Username)
 			g.broadcastBoardState()
 			return
 		}
 		// Player got out, continue with movement
+		log.Printf("Player %s successfully left jail", player.Username)
 	}
 
 	// 2. Doubles Detection
@@ -516,7 +736,8 @@ func (g *Game) handleMove(msg Message) {
 		// Anti-Monopoly rule: Can roll doubles once, go to jail on second time
 		if player.ConsecutiveDoubles >= 2 {
 			// Send player to jail for rolling doubles twice
-			g.sendPlayerToJail(player, "go_to_prison")
+			log.Printf("Player %s rolled doubles twice in a row, sending to jail", player.Username)
+			g.sendPlayerToJail(player, "go_to_jail")
 			player.ConsecutiveDoubles = 0
 			player.HasExtraTurn = false // Clear extra turn flag
 			// Turn ends, advance to next player
@@ -533,26 +754,45 @@ func (g *Game) handleMove(msg Message) {
 	currentPosition := player.Position
 	boardSize := len(g.Board.Places)
 	newPosition := (currentPosition + diceSum) % boardSize
-	passedStart := newPosition < currentPosition
+
+	// Check if player passed or landed on Start (position 0)
+	// This happens when the new position wraps around (newPosition < currentPosition)
+	// or when moving from position > 0 to exactly position 0
+	passedStart := (currentPosition + diceSum) >= boardSize
 
 	player.Position = newPosition
 
-	// 4. Start Space Handling
-	if passedStart || newPosition == 0 {
-		// player gets 100 EXP for passing Go!
+	// 4. Start Space Handling - Give 100 EXP for passing or landing on Start
+	if passedStart {
 		player.Exp += 100
+		log.Printf("Player %s passed/landed on Start, received 100 EXP (total: %d)", player.Username, player.Exp)
 	}
 
-	// 5. Landing Space Resolution
-	g.resolveLandingSpace(player, newPosition)
-
-	// 6. Post-Move Processing
+	// 5. Set extra turn flag BEFORE landing resolution (needed for purchase flow)
 	if isDoubles && !isExtraTurn {
 		// Grant extra turn (flag for next move)
 		// Anti-Monopoly: Can roll doubles once (one extra turn)
 		g.setExtraTurnFlag(player)
+		log.Printf("Player %s rolled doubles, extra turn granted", player.Username)
+	}
+
+	// 6. Landing Space Resolution
+	waitingForPurchase := g.resolveLandingSpace(player, newPosition)
+
+	// 7. Post-Move Processing
+	// If waiting for purchase decision, don't advance turn yet
+	// The turn will be advanced when the purchase response is received
+	if waitingForPurchase {
+		log.Printf("Waiting for purchase decision from %s, turn not advanced", player.Username)
+		g.broadcastBoardState()
+		return
+	}
+
+	// Not waiting for purchase, advance turn normally
+	if player.HasExtraTurn {
+		// Keep turn with current player
 		g.Board.CurrentPlayer = player.Username
-		log.Printf("Extra turn granted to %s", player.Username)
+		log.Printf("Extra turn - keeping turn with %s", player.Username)
 	} else {
 		// Advance to next player's turn
 		nextPlayer := g.getNextPlayer(player.Username)
@@ -565,16 +805,120 @@ func (g *Game) handleMove(msg Message) {
 	g.broadcastBoardState()
 }
 
-// Helper function to check if player is in System crash or Infinite Loop
-func (g *Game) isPlayerInPrisonOrPriceWar(player *Player) bool {
-	// Check if current position is the combined jail space (System crash for monopolists, Infinite Loop for competitors)
-	spaceName := g.Board.Places[player.Position].Name
-	return spaceName == "System crash" || spaceName == "Infinite Loop" || spaceName == "Jail"
+// Helper function to handle property purchase response
+func (g *Game) handlePropertyPurchaseResponse(msg Message) {
+	dataBytes, err := json.Marshal(msg.Data)
+	if err != nil {
+		log.Println("Error marshalling property purchase response data:", err)
+		return
+	}
+
+	var purchaseResponse PropertyPurchaseResponse
+	if err := json.Unmarshal(dataBytes, &purchaseResponse); err != nil {
+		log.Println("Error unmarshalling property purchase response:", err)
+		return
+	}
+
+	log.Printf("Property purchase response: %+v", purchaseResponse)
+
+	if purchaseResponse.PlayerUsername == "" {
+		log.Println("Player not found for property purchase:", g.Board.CurrentPlayer)
+		return
+	}
+
+	// Find the property space by name
+	var spaceIndex int = -1
+	for i, place := range g.Board.Places {
+		if place.Name == purchaseResponse.PropertyName {
+			spaceIndex = i
+			break
+		}
+	}
+
+	if spaceIndex == -1 {
+		log.Println("Property not found:", purchaseResponse.PropertyName)
+		return
+	}
+
+	space := &g.Board.Places[spaceIndex]
+
+	// get the player by username
+	var player *Player
+	for _, p := range g.Board.Players {
+		if p.Username == purchaseResponse.PlayerUsername {
+			player = p
+			break
+		}
+	}
+
+	if player == nil {
+		log.Println("Player not found:", purchaseResponse.PlayerUsername)
+		return
+	}
+
+	if purchaseResponse.Accepted {
+		// Check if property is already owned
+		if space.Owner != "" {
+			log.Println("Property already owned:", space.Name)
+			// Advance turn anyway
+			g.advanceTurnAfterPurchase(player)
+			return
+		}
+
+		// Check if player can afford the property
+		if player.Exp < space.Price {
+			log.Println("Player can't afford the property:", player.Username, "needs", space.Price, "has", player.Exp)
+			// Advance turn anyway
+			g.advanceTurnAfterPurchase(player)
+			return
+		}
+
+		// Complete the purchase
+		space.Owner = player.Username
+		player.OwnedPlaces[*space] = 0 // 0 servers initially
+		player.Exp -= space.Price
+
+		log.Printf("Player %s purchased %s for %d EXP", player.Username, space.Name, space.Price)
+	} else {
+		log.Printf("Player %s declined to purchase %s", player.Username, space.Name)
+	}
+
+	// Advance turn after purchase decision
+	g.advanceTurnAfterPurchase(player)
 }
 
-// Helper function to handle System crash/Infinite Loop exit logic
-func (g *Game) handlePrisonPriceWarExit(player *Player, move MoveMessage) bool {
-	// Check if player can get out (doubles roll, pay $50, or forced after 2 turns)
+// Helper function to advance turn after purchase decision
+func (g *Game) advanceTurnAfterPurchase(player *Player) {
+	// Check if player has extra turn flag (from rolling doubles)
+	if player.HasExtraTurn {
+		log.Printf("Player %s has extra turn, keeping turn", player.Username)
+		g.Board.CurrentPlayer = player.Username
+	} else {
+		// Advance to next player
+		nextPlayer := g.getNextPlayer(player.Username)
+		g.Board.CurrentPlayer = nextPlayer
+		log.Printf("Turn advanced to %s after purchase decision", nextPlayer)
+	}
+
+	// Broadcast updated board state
+	g.broadcastBoardState()
+}
+
+// Helper function to check if player is in jail
+// This checks if the player is actually IN jail (sent there), not just visiting
+func (g *Game) isPlayerInJail(player *Player) bool {
+	// Check if player's username is in the jail list
+	for _, jailedPlayer := range g.Board.Jail {
+		if jailedPlayer == player.Username {
+			return true
+		}
+	}
+	return false
+}
+
+// Helper function to handle jail exit logic
+func (g *Game) handleJailExit(player *Player, move MoveMessage) bool {
+	// Check if player can get out (doubles roll, pay 50 EXP, or forced after 2 turns)
 	player.JailAttempts++
 
 	// Try doubles first
@@ -582,62 +926,73 @@ func (g *Game) handlePrisonPriceWarExit(player *Player, move MoveMessage) bool {
 		// Player leaves jail
 		g.Board.Jail = g.removePlayerFromJail(g.Board.Jail, player.Username)
 		player.JailAttempts = 0
+		log.Printf("Player %s left jail by rolling doubles", player.Username)
 		return true
 	}
 
-	// After 2 attempts, force exit (pay $50)
+	// After 2 attempts, force exit (pay 50 EXP)
 	if player.JailAttempts >= 2 {
 		// Player pays the fine
 		if player.Exp >= 50 {
 			player.Exp -= 50
 			g.Board.Jail = g.removePlayerFromJail(g.Board.Jail, player.Username)
 			player.JailAttempts = 0
+			log.Printf("Player %s left jail by paying 50 EXP", player.Username)
 			return true
 		} else {
 			// Player can't pay, handle bankruptcy
+			log.Printf("Player %s cannot pay jail fee, handling bankruptcy", player.Username)
 			g.handleBankruptcy(player)
 			return false
 		}
 	}
 
 	// Player stays in jail
+	log.Printf("Player %s stays in jail (attempt %d/2)", player.Username, player.JailAttempts)
 	return false
 }
 
 // Helper function to resolve landing space effects
-func (g *Game) resolveLandingSpace(player *Player, position int) {
+// Returns true if waiting for player decision (e.g., property purchase)
+func (g *Game) resolveLandingSpace(player *Player, position int) bool {
 	space := g.Board.Places[position]
 	spaceType := g.getSpaceType(position)
 
+	log.Printf("Player %s landed on position %d: %s (type: %s, owner: %s, price: %d)",
+		player.Username, position, space.Name, spaceType, space.Owner, space.Price)
+
 	switch spaceType {
 	case "sightseeing":
-		// Sightseeing Corner (first corner): No action, continue normally
-		return
+		// Sightseeing/free space: No action, continue normally
+		log.Printf("Player %s landed on free space: %s", player.Username, space.Name)
+		return false
 
 	case "unowned_property":
-		// Unowned Property: For now, auto-decline to keep turns non-blocking
-		// TODO: Implement async purchase flow if needed
-		return
+		// Unowned Property: Prompt for purchase and wait for response
+		log.Printf("Triggering purchase prompt for %s", space.Name)
+		g.promptPurchase(player, &space)
+		return true // Wait for purchase response before advancing turn
 
 	case "owned_property":
 		// Owned Property: Calculate and pay rent
 		g.handleRentPayment(player, &space)
-		return
+		return false
 
 	case "competitor_card", "monopolist_card":
 		// Competitor/Monopolist Card Space: Draw and resolve card
 		g.handleCardSpace(player, spaceType)
-		return
+		return false
 
-	case "go_to_prison", "go_to_price_war":
-		// Go to System crash / Go to Infinite Loop: Move player to jail
+	case "go_to_jail":
+		// Go to jail: Send player to jail (add to jail array)
+		log.Printf("Player %s landed on %s - sending to jail!", player.Username, space.Name)
 		g.sendPlayerToJail(player, spaceType)
-		return
+		return false
 
 	case "income_tax":
 		// Income Tax: Calculate and pay
 		g.handleIncomeTax(player)
-		return
+		return false
 
 	case "property_tax":
 		// Property Tax: player loses 75 EXP
@@ -646,53 +1001,75 @@ func (g *Game) resolveLandingSpace(player *Player, position int) {
 		} else {
 			g.handleBankruptcy(player)
 		}
-		return
+		return false
 
 	case "anti_monopoly_foundation":
 		// Anti-Monopoly Foundation: Roll 1 die or pay
 		g.handleAntiMonopolyFoundation(player)
-		return
+		return false
 
 	default:
 		// Regular property space
 		if space.Owner != "" && space.Owner != player.Username {
 			g.handleRentPayment(player, &space)
 		}
+		return false
 	}
 }
 
 // Helper function to get space type
 func (g *Game) getSpaceType(position int) string {
 	// Returns: "sightseeing", "unowned_property", "owned_property",
-	// "competitor_card", "monopolist_card", "go_to_prison" (System crash), "go_to_price_war" (Infinite Loop),
+	// "competitor_card", "monopolist_card", "go_to_jail",
 	// "income_tax", "property_tax", "anti_monopoly_foundation", etc.
 
 	space := g.Board.Places[position]
 
-	// Simple detection based on name (placeholder)
+	// Simple detection based on name
 	switch space.Name {
+	case "Start":
+		return "sightseeing"
 	case "Income Tax":
 		return "income_tax"
 	case "Property Tax":
 		return "property_tax"
 	case "Anti-Monopoly Foundation":
 		return "anti_monopoly_foundation"
-	case "Go to Prison", "Go to System crash":
-		return "go_to_prison"
-	case "Go to Price War", "Go to Infinite Loop":
-		return "go_to_price_war"
+	case "Jail":
+		return "sightseeing" // Jail space - just visiting, no action when landing
+	case "Code Errors":
+		return "go_to_jail" // This space sends you to jail
 	case "Competitor Card", "Competitor":
 		return "competitor_card"
 	case "Monopolist Card", "Monopolist":
 		return "monopolist_card"
-	case "Code Errors":
-		return "sightseeing" // Just visiting, no action
 	default:
+		// Check if it's a purchasable property (has a price > 0)
+		if space.Price <= 0 {
+			return "sightseeing" // Free spaces are not purchasable
+		}
 		if space.Owner == "" {
 			return "unowned_property"
 		}
 		return "owned_property"
 	}
+}
+
+func (g *Game) promptPurchase(player *Player, space *Place) {
+	promptMsg := Message{
+		Type: string(MessagePropertyPurchaseRequest),
+		Data: PropertyPurchaseRequest{
+			PropertyName: space.Name,
+			Accepted:     false,
+		},
+	}
+
+	// send it to the player (async - response handled via handlePropertyPurchaseResponse)
+	if err := player.Conn.WriteJSON(promptMsg); err != nil {
+		log.Println("Error sending purchase prompt message to player:", err)
+	}
+
+	log.Printf("Sent purchase prompt for %s to player %s", space.Name, player.Username)
 }
 
 // Helper function to handle rent payment
@@ -714,11 +1091,14 @@ func (g *Game) handleRentPayment(player *Player, space *Place) {
 		return
 	}
 
-	// Check if owner is in System crash/Infinite Loop (monopolists can't collect)
-	if g.isPlayerInPrisonOrPriceWar(owner) {
+	// Check if owner is in jail (monopolists can't collect rent when in jail, but competitors can)
+	if g.isPlayerInJail(owner) {
 		if owner.Role == PlayerRoleMonopolist {
+			log.Printf("Owner %s is a monopolist in jail, cannot collect rent", owner.Username)
 			return
 		}
+		// Competitors CAN collect rent even when in jail, so continue
+		log.Printf("Owner %s is a competitor in jail, can still collect rent", owner.Username)
 	}
 
 	// Calculate rent based on owner's role and buildings
@@ -891,12 +1271,12 @@ func (g *Game) resolveCardEffect(player *Player, card *Card) {
 			g.handleBankruptcy(player)
 		}
 
-	// System crash/Infinite Loop cards
+	// Go to jail cards
 	case "go_to_prison_card_1":
-		g.sendPlayerToJail(player, "go_to_prison")
+		g.sendPlayerToJail(player, "go_to_jail")
 
 	case "go_to_prison_card_2":
-		g.sendPlayerToJail(player, "go_to_prison")
+		g.sendPlayerToJail(player, "go_to_jail")
 
 	default:
 		// Unknown card, log it
@@ -960,21 +1340,23 @@ func (g *Game) returnCardToDeck(cardType CardType, card *Card) {
 
 // Helper function to send player to jail
 func (g *Game) sendPlayerToJail(player *Player, spaceType string) {
-	// Move player to the combined jail space (System crash/Infinite Loop)
-	jailPosition := g.findJailPosition(player.Role)
+	// Move player to jail
+	jailPosition := g.findJailPosition()
 	if jailPosition >= 0 {
 		player.Position = jailPosition
 		player.JailAttempts = 0
 		g.Board.Jail = append(g.Board.Jail, player.Username)
+		log.Printf("Player %s sent to Jail at position %d", player.Username, jailPosition)
+	} else {
+		log.Printf("ERROR: Jail position not found!")
 	}
 }
 
 // Helper function to find jail position
-func (g *Game) findJailPosition(role PlayerRole) int {
-	// Find the combined jail space (System crash for monopolists, Infinite Loop for competitors)
-	// Both roles go to the same space
+func (g *Game) findJailPosition() int {
+	// Find the jail space
 	for i, place := range g.Board.Places {
-		if place.Name == "System crash" || place.Name == "Infinite Loop" || place.Name == "Jail" {
+		if place.Name == "Jail" {
 			return i
 		}
 	}
@@ -1161,7 +1543,11 @@ func (g *Game) BroadcastLoop() {
 
 // removePlayerFromSlice removes a player from a slice of players
 func (g *Game) removePlayerFromSlice(slice []*Player, username string) []*Player {
-	newSlice := make([]*Player, 0, len(slice)-1)
+	// Handle empty slice or prevent negative capacity
+	if len(slice) == 0 {
+		return slice
+	}
+	newSlice := make([]*Player, 0, len(slice))
 	for _, p := range slice {
 		if p.Username != username {
 			newSlice = append(newSlice, p)
@@ -1172,7 +1558,11 @@ func (g *Game) removePlayerFromSlice(slice []*Player, username string) []*Player
 
 // removePlayerFromJail removes a player from the jail slice
 func (g *Game) removePlayerFromJail(slice []string, username string) []string {
-	newSlice := make([]string, 0, len(slice)-1)
+	// Handle empty slice or prevent negative capacity
+	if len(slice) == 0 {
+		return slice
+	}
+	newSlice := make([]string, 0, len(slice))
 	for _, p := range slice {
 		if p != username {
 			newSlice = append(newSlice, p)

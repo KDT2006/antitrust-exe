@@ -11,7 +11,7 @@ const _spacing = 15;
 
 type CarouselCard = {
   Regular: { Location: string; Price: number };
-  Flipped: { 
+  Flipped: {
     PlayerType?: string;
     PropertyName: string;
     BaseRent: number;
@@ -25,7 +25,13 @@ type CarouselCard = {
   Color: string;
 };
 
-const Carousel = ({ currentIndex, cards }: { currentIndex: number; cards: CarouselCard[] }) => {
+const Carousel = ({
+  currentIndex,
+  cards,
+}: {
+  currentIndex: number;
+  cards: CarouselCard[];
+}) => {
   const scrollX = useSharedValue(0);
   const onScroll = useAnimatedScrollHandler((e) => {
     scrollX.value = e.contentOffset.x / (_imageWidth + _spacing);
@@ -33,9 +39,11 @@ const Carousel = ({ currentIndex, cards }: { currentIndex: number; cards: Carous
   const flatListRef = React.useRef<Animated.FlatList>(null);
 
   useEffect(() => {
-    if (cards.length > 0 && currentIndex >= 0 && currentIndex < cards.length) {
+    if (cards.length > 0 && currentIndex >= 0) {
+      // Wrap the index if it exceeds the cards length
+      const wrappedIndex = currentIndex % cards.length;
       flatListRef.current?.scrollToIndex({
-        index: currentIndex % cards.length,
+        index: wrappedIndex,
         animated: true,
       });
     }
@@ -43,7 +51,9 @@ const Carousel = ({ currentIndex, cards }: { currentIndex: number; cards: Carous
 
   if (cards.length === 0) {
     return (
-      <View style={{ justifyContent: "center", alignItems: "center", padding: 20 }}>
+      <View
+        style={{ justifyContent: "center", alignItems: "center", padding: 20 }}
+      >
         <Text style={{ color: "#fff" }}>No items to display</Text>
       </View>
     );
@@ -52,6 +62,7 @@ const Carousel = ({ currentIndex, cards }: { currentIndex: number; cards: Carous
   return (
     <View style={{ justifyContent: "center", alignItems: "center" }}>
       <Animated.FlatList
+        scrollEnabled={false}
         data={cards}
         ref={flatListRef}
         keyExtractor={(_, index) => String(index)}
@@ -80,4 +91,3 @@ const Carousel = ({ currentIndex, cards }: { currentIndex: number; cards: Carous
 };
 
 export default Carousel;
-

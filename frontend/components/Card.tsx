@@ -80,10 +80,10 @@ const Card = ({
           {/* Content */}
           <View style={styles.contentContainer}>
             <Animated.View style={[styles.textContainer]}>
-              <Text style={styles.title}>{item.Regular.Location ?? ""}</Text>
+              <Text numberOfLines={1} style={styles.title}>{item.Regular.Location ?? ""}</Text>
               {item.Regular.Price > 0 ? (
                 <View style={styles.priceContainer}>
-                  <Text style={styles.currency}>$</Text>
+                  <Text style={styles.currency}>EXP</Text>
                   <Animated.Text style={[styles.price]}>
                     {item.Regular.Price}
                   </Animated.Text>
@@ -194,13 +194,14 @@ const styles = StyleSheet.create({
   title: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 26,
+    fontSize: 23,
     textAlign: "center",
     letterSpacing: 2,
     marginBottom: 20,
     textShadowColor: "rgba(0, 0, 0, 0.8)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
+    fontFamily: "PressStart2P_400Regular",
   },
   description: {
     color: "#fff",
@@ -230,6 +231,7 @@ const styles = StyleSheet.create({
     textShadowColor: "rgba(0, 0, 0, 0.8)",
     textShadowOffset: { width: 0, height: 2 },
     textShadowRadius: 4,
+    fontFamily: "PressStart2P_400Regular",
   },
   baseRent: {
     color: "#aaa",
@@ -272,6 +274,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     borderWidth: 1,
     borderColor: "rgba(36, 199, 188, 0.3)",
+    marginTop: 75,
   },
   currency: {
     color: "#24c7bc",

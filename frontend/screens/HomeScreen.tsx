@@ -27,9 +27,6 @@ const HomeScreen = ({
         >
           <Text style={styles.buttonText}>Create Game</Text>
         </Pressable>
-        <Pressable style={styles.button}>
-          <Text style={styles.buttonText}>Instructions</Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -40,7 +37,7 @@ export default HomeScreen;
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: "space-evenly",
     alignItems: "center",
   },
   title: {
@@ -53,15 +50,15 @@ const styles = StyleSheet.create({
   button: {
     padding: 15,
     borderRadius: 15,
-    borderColor: "white",
-    borderWidth: 5,
+    borderColor: "#B2E4F9",
+    borderWidth: 2,
     margin: 10,
-    backgroundColor: "rgba(255, 255, )",
+    backgroundColor: "#121224",
   },
   buttonText: {
     fontSize: 18,
     color: "#fff",
-    fontWeight: "bold",
+    fontWeight: "500",
     textAlign: "center",
   },
 });
