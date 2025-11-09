@@ -1178,7 +1178,7 @@ func (g *Game) resolveCardEffect(player *Player, card *Card) {
 	case "move_to_start":
 		g.moveToPlace(player, "Start")
 		// Collect from Start (100 EXP for passing Go)
-		player.Exp += 100
+		player.Exp += 200
 
 	case "move_to_quantum_computing":
 		g.moveToPlace(player, "Quantum Computing")

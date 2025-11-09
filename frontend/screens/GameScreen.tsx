@@ -24,6 +24,7 @@ import Dice from "../components/Dice";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import Entypo from "@expo/vector-icons/Entypo";
+import Change from "../components/Change";
 
 // Type definitions for game state
 export interface Player {
@@ -99,6 +100,10 @@ const GameScreen = ({
     placeName: string;
     playerUsername: string;
   };
+
+  const [expChange, setExpChange] = useState<number>(0);
+  const previousExpRef = useRef<number | null>(null);
+
   // ref
   const bottomSheetRef = useRef<BottomSheet>(null);
 
@@ -122,6 +127,15 @@ const GameScreen = ({
               "BoardState received, places:",
               boardData.places?.length || 0
             );
+            
+            // Calculate EXP change using ref to track previous value
+            const currentExp = boardData.players.find((p) => p.username === username)?.exp || 0;
+            if (previousExpRef.current !== null) {
+              const change = currentExp - previousExpRef.current;
+              setExpChange(change);
+            }
+            previousExpRef.current = currentExp;
+            
             setBoardState(boardData);
             setCurrentPlayer((boardData.currentPlayer || "").trim());
             break;
@@ -328,6 +342,7 @@ const GameScreen = ({
       <SafeAreaView style={styles.container}>
         <VideoBackground />
         <Text style={styles.exp}>{myPlayerData?.exp} EXP</Text>
+        <Change expChange={expChange} />
 
         <Text style={styles.playerText}>Current Player: {currentPlayer}</Text>
 
@@ -411,7 +426,7 @@ const GameScreen = ({
                 fontSize: 17,
                 fontFamily: "PressStart2P_400Regular",
                 marginVertical: 20,
-                marginBottom: 40
+                marginBottom: 40,
               }}
             >
               {purchasePrompt?.propertyName}
