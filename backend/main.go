@@ -1,6 +1,8 @@
 package main
 
+import "log"
+
 func main() {
-	// fmt.Println("Hello world!")
-	panic("Hello world!")
+	server := NewServer(":4000")
+	log.Fatal(server.Run())
 }
